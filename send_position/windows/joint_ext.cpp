@@ -74,6 +74,7 @@ void doJob() {
 							data.p[jointList[idx]][0] = joint.Position.X;
 							data.p[jointList[idx]][1] = joint.Position.Y;
 							data.p[jointList[idx]][2] = joint.Position.Z;
+							//orientaion value of one joint is set in joint.Orientation.w, joint.Orientation.x, joint.Orientation.y, joint.Orientation.z
 
 							cnt++;
 						}
