@@ -718,16 +718,9 @@ class NtKinect {
     ERROR_CHECK(bodyFrame->GetAndRefreshBodyData(BODY_COUNT, &bodies[0]));
   }
  public:
-  // Joint.Position.{X,Y,Z}  // CameraSpacePoint
-  //    DepthSpacePoint dp;
-  //    coordinateMapper->MapCameraPointToDepthSpace(joint.Position, &dp);
-  //    ColorSpacePoint cp;
-  //    coordinateMapper->MapCameraPointToColorSpace(joint.Position, &cp);
-  // Joint.TrackingState  == TrackingState::TrackingState_{Tracked,Inferred}
   vector<int> skeletonId;
   vector<UINT64> skeletonTrackingId;
   vector<vector<Joint> > skeleton;
-  //vector<int> jointList{ 2,3,4,5,7,8,9,11 }; // !! change here!! joint type information -> Skel.data
   void setSkeleton() { setSkeleton(skeleton); }
   void setSkeleton(vector<vector<Joint> >& skeleton) {
     updateBodyFrame();
@@ -744,37 +737,11 @@ class NtKinect {
       Joint joints[JointType::JointType_Count];
       body->GetJoints(JointType::JointType_Count, joints);
       for (auto joint : joints) skel.push_back(joint);
-      //for (auto joint : joints) // HY 
-      //{
-      //    for (int j = 0; j < jointList.size(); ++j) {
-      //        if (joint.JointType == jointList[j])
-      //            skel.push_back(joint);
-      //    }
-      //}
       skeleton.push_back(skel);
       skeletonId.push_back(i);
       UINT64 trackingId;
       ERROR_CHECK(body->get_TrackingId(&trackingId));
-      skeletonTrackingId.push_back(trackingId);
-
-      //std::cout << "skeleton.size() :  " << skeleton.size() << std::endl;
-      //std::cout << "skeleton[0].size() " << skeleton[0].size() << std::endl;
-      //
-      //for (int j = 0; j < skeleton[0].size(); ++j) {
-      //    std::cout << /*j << "th joint type position"*/ /*<<*/ skeleton[0][3].Position.X << " " << skeleton[0][3].Position.Y << " " << skeleton[0][3].Position.Z << " " << "\n";
-      //}
-      
-    /*  for (int i = 0; skeleton.size(); ++i) {
-          std::ofstream skeletonFile;
-          for (int j = 0; skeleton[i].size(); ++j) {
-              std::cout << j << "th joint type position" << skeleton[i][j].Position.X  << " " << skeleton[i][j].Position.Y << " " << skeleton[i][j].Position.Z << " " << "\n"
-                  << "orientaion, (w,x,y,x) " << skeleton[i][j].Orientation.w << " " << skeleton[i][j].Orientation.x << " " << skeleton[i][j].Orientation.y << " " << skeleton[i][j].Orientation.z << "\n";
-              skeletonFile << skeleton[i][j].Position.X << skeleton[i][j].Position.Y << skeleton[i][j].Position.Z <<
-              skeleton[i][j].orientation.w << skeleton[i][j].orientation.x << skeleton[i][j].orientation.y << "\n";
-          }
-          skeletonFile.close();*/
-      //}
-    
+      skeletonTrackingId.push_back(trackingId);    
     }
   }
   
