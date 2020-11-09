@@ -43,6 +43,6 @@
 typedef struct Data {
     //skeleton
     bool type[25];
-    double p[25][3]; 
+    double p[25][6]; 
 };
 #pragma pack(pop)
