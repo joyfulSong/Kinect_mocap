@@ -56,35 +56,45 @@ int main(int argc, char** argv)
         }
 
         while (WaitResult == WAIT_OBJECT_0) {
-            memset(&data, 0, sizeof(data));//
+            memset(&data, 0, sizeof(data));
             FILE* fp = fopen("C:\\Users\\shy47\\source\\repos\\kinect_to_ros\\kinect_to_ros\\kinect_output.txt", "rb"); // open the file as r/binary mode
             fread(&data, sizeof(data), 1, fp); //read the file and save in the structure instance
-            
+
             s.type.clear();
             s.position.clear();
-         
+            s.orientation.clear();
+
             for (int i = 0; i < 25; ++i) {
                 if (data.type[i] == 1) {
                     s.type.push_back(i);
                     std::cout << i << " ";
 
                     geometry_msgs::Vector3 p; //double x, y, z
+                    geometry_msgs::Vector3 o;
                     p.x = data.p[i][0]; p.y = data.p[i][1]; p.z = data.p[i][2];
-                    std::cout << p.x << p.y << p.z << endl;
+                    o.x = data.p[i][3]; o.y = data.p[i][4]; o.z = data.p[i][5];
+                   /* std::cout << p.x << p.y << p.z << endl
+                        << o.x << o.y << o.z << endl;*/
                     s.position.push_back(p);
+                    s.orientation.push_back(o);
                 }
-                
+
             }
 
             //check 
-            //for (int i = 0; i < s.position.size(); ++i) 
-            // {
-            //    geometry_msgs::Vector3 p; 
-            //    p = s.position[i];
-            //    ROS_INFO("%d : x: %lf, y: %lf, z: %lf", s.type[i], p.x, p.y, p.z);
-            // }
-           
+            for (int i = 0; i < s.position.size(); ++i) 
+             {
+                geometry_msgs::Vector3 p;
+                geometry_msgs::Vector3 o;
+                p = s.position[i];
+                o = s.orientation[i];
+                ROS_INFO("%d position : x: %lf, y: %lf, z: %lf", s.type[i], p.x, p.y, p.z);
+                ROS_INFO("%d orientation : x: %lf, y: %lf, z: %lf", s.type[i], o.x, o.y, o.z);
+             }
+
             
+
+
             chatter_pub.publish(s);
 
             ros::spinOnce();
@@ -96,7 +106,7 @@ int main(int argc, char** argv)
             CloseHandle(hMutex);
         }
 
-        
+
     }
 
 

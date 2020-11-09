@@ -718,11 +718,17 @@ class NtKinect {
     ERROR_CHECK(bodyFrame->GetAndRefreshBodyData(BODY_COUNT, &bodies[0]));
   }
  public:
+  // Joint.Position.{X,Y,Z}  // CameraSpacePoint
+  //    DepthSpacePoint dp;
+  //    coordinateMapper->MapCameraPointToDepthSpace(joint.Position, &dp);
+  //    ColorSpacePoint cp;
+  //    coordinateMapper->MapCameraPointToColorSpace(joint.Position, &cp);
+  // Joint.TrackingState  == TrackingState::TrackingState_{Tracked,Inferred}
   vector<int> skeletonId;
   vector<UINT64> skeletonTrackingId;
-  vector<vector<Joint> > skeleton;
+  vector<vector<pair <Joint, JointOrientation>> > skeleton; //hy 119
   void setSkeleton() { setSkeleton(skeleton); }
-  void setSkeleton(vector<vector<Joint> >& skeleton) {
+  void setSkeleton(vector<vector<pair <Joint, JointOrientation>> >& skeleton) { //hy 119
     updateBodyFrame();
     skeleton.clear();
     skeletonId.clear();
@@ -733,15 +739,42 @@ class NtKinect {
       BOOLEAN isTracked = false;
       ERROR_CHECK(body->get_IsTracked(&isTracked));
       if (!isTracked) continue;
-      vector<Joint> skel;
+      vector< pair <Joint, JointOrientation>> skel; //hy 119
       Joint joints[JointType::JointType_Count];
       body->GetJoints(JointType::JointType_Count, joints);
-      for (auto joint : joints) skel.push_back(joint);
+      //for (auto joint : joints) skel.push_back(joint); //hy 119
+      //hy 119
+      JointOrientation jointOrientations[JointType::JointType_Count];
+      body->GetJointOrientations(JointType::JointType_Count, jointOrientations);
+      for (int i = 0; i < JointType::JointType_Count; ++i) {
+          skel.push_back(make_pair(joints[i], jointOrientations[i]));
+      }
+      //hy 119
+
       skeleton.push_back(skel);
       skeletonId.push_back(i);
       UINT64 trackingId;
       ERROR_CHECK(body->get_TrackingId(&trackingId));
-      skeletonTrackingId.push_back(trackingId);    
+      skeletonTrackingId.push_back(trackingId);
+
+      //std::cout << "skeleton.size() :  " << skeleton.size() << std::endl;
+      //std::cout << "skeleton[0].size() " << skeleton[0].size() << std::endl;
+      //
+      //for (int j = 0; j < skeleton[0].size(); ++j) {
+      //    std::cout << /*j << "th joint type position"*/ /*<<*/ skeleton[0][3].Position.X << " " << skeleton[0][3].Position.Y << " " << skeleton[0][3].Position.Z << " " << "\n";
+      //}
+      
+    /*  for (int i = 0; skeleton.size(); ++i) {
+          std::ofstream skeletonFile;
+          for (int j = 0; skeleton[i].size(); ++j) {
+              std::cout << j << "th joint type position" << skeleton[i][j].Position.X  << " " << skeleton[i][j].Position.Y << " " << skeleton[i][j].Position.Z << " " << "\n"
+                  << "orientaion, (w,x,y,x) " << skeleton[i][j].Orientation.w << " " << skeleton[i][j].Orientation.x << " " << skeleton[i][j].Orientation.y << " " << skeleton[i][j].Orientation.z << "\n";
+              skeletonFile << skeleton[i][j].Position.X << skeleton[i][j].Position.Y << skeleton[i][j].Position.Z <<
+              skeleton[i][j].orientation.w << skeleton[i][j].orientation.x << skeleton[i][j].orientation.y << "\n";
+          }
+          skeletonFile.close();*/
+      //}
+    
     }
   }
   
