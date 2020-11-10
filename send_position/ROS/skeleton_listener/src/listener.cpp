@@ -7,11 +7,12 @@ void chatterCallback(const skeleton_listener::Skeleton& s)
 {
   for (int i = 0; i < s.position.size(); ++i) 
   {
-                geometry_msgs::Vector3 p, o;
+                geometry_msgs::Vector3 p;
+                geometry_msgs::Quaternion o;
                 p = s.position[i];
                 o = s.orientation[i];
                 ROS_INFO("%d : x: %lf, y: %lf, z: %lf", s.type[i], p.x, p.y, p.z);
-                ROS_INFO("%d orientation: x: %lf, y: %lf, z: %lf", s.type[i], o.x, o.y, o.z);
+                ROS_INFO("%d orientation: x: %lf, y: %lf, z: %lf, w: %lf", s.type[i], o.x, o.y, o.z, o.w);
    }
 
 }
