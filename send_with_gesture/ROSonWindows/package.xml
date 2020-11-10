@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>skeleton_sender</name>
+  <name>skeleton_sender_wges</name>
   <version>0.1.0</version>
   <description>This package sends skeleton and gestures from kinect to ros on ubuntu</description>
 

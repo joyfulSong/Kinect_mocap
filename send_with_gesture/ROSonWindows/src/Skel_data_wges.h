@@ -27,7 +27,6 @@
         JointType_HandTipRight	= 23,
         JointType_ThumbRight	= 24,
         JointType_Count	= ( JointType_ThumbRight + 1 )
-
         --> focus on upper body:
         JointType_Neck	= 2,
         JointType_Head	= 3,
@@ -39,32 +38,28 @@
         JointType_HandRight	= 11,
         */
 
-//typedef struct jointPosition {
-//    double x, y, z;
-//};
-//
-//typedef struct jointOrientation {
-//    double x, y, z, w;
-//};
+        //typedef struct jointPosition {
+        //    double x, y, z;
+        //};
+        //
+        //typedef struct jointOrientation {
+        //    double x, y, z, w;
+        //};
 
 #pragma pack(push,1) // 1바이트 단위로 정렬해라. 
 typedef struct Data {
     //skeleton
     bool type[25];
-    double p[25][3]; //벡터로 정의 한 뒤에 resize해주고 인덱스로 대입하는 방법도. 
-    /*std::vector<double> p_x;
-    std::vector<double> p_y;
-    std::vector<double> p_z;*/
-    //std::vector<Position> p;
-    //std::vector<orientation> o;
+    double p[25][7]; //벡터로 정의 한 뒤에 resize해주고 인덱스로 대입하는 방법도. 
 
     //gesture
     int flag_d = 0;
     double discrete_confi[10];
     char discrete_type[10][20] = { 0, };
 
-    int flag_c = 0; // 항상 gesture가 있는게 아니니깐, 있을때만 메세지로 보내자. 
+    int flag_c = 0;
     double continuous_confi[10];
     char continuous_type[10][20] = { 0, };
+    //
 };
 #pragma pack(pop)

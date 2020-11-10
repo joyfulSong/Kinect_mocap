@@ -8,7 +8,7 @@
 
 #define USE_GESTURE
 #include "NtKinect.h"
-#include "Skel_data.h"
+#include "Skel_data_wges.h"
 
 void putText(cv::Mat& img, string s, cv::Point p) {
 	cv::putText(img, s, p, cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 255), 2.0, CV_AA);
@@ -60,22 +60,26 @@ void doJob() {
 			for (auto person : kinect.skeleton) {
 				// 하나의 id에 대해서만 넣기.
 				// confidence value 높은것, 낮은것 선택할 기준 정해서 '벡터에' 넣기
-				for (auto joint : person) {
+				for (int joint = 0; joint < person.size(); ++joint) {
 					// consider all joints of ONE person. 
-					if (joint.TrackingState == TrackingState_NotTracked) continue;
+					if (person[joint].first.TrackingState == TrackingState_NotTracked) continue;
 					ColorSpacePoint cp;
-					kinect.coordinateMapper->MapCameraPointToColorSpace(joint.Position, &cp);
+					kinect.coordinateMapper->MapCameraPointToColorSpace(person[joint].first.Position, &cp);
 					cv::rectangle(kinect.rgbImage, cv::Rect((int)cp.X - 5, (int)cp.Y - 5, 10, 10), cv::Scalar(0, 0, 255), 2);
 
 					for (int idx = 0; idx < jointList.size(); ++idx) // check this joint is one of the list member
 					{
-						if (joint.JointType == jointList[idx])
+						if (person[joint].first.JointType == jointList[idx])
 						{
 							data.type[jointList[idx]] = 1;
 
-							data.p[jointList[idx]][0] = joint.Position.X;
-							data.p[jointList[idx]][1] = joint.Position.Y;
-							data.p[jointList[idx]][2] = joint.Position.Z;
+							data.p[jointList[idx]][0] = person[joint].first.Position.X;
+							data.p[jointList[idx]][1] = person[joint].first.Position.Y;
+							data.p[jointList[idx]][2] = person[joint].first.Position.Z;
+							data.p[jointList[idx]][3] = person[joint].second.Orientation.x;
+							data.p[jointList[idx]][4] = person[joint].second.Orientation.y;
+							data.p[jointList[idx]][5] = person[joint].second.Orientation.z;
+							data.p[jointList[idx]][6] = person[joint].second.Orientation.w;
 
 							cnt++;
 						}
@@ -117,9 +121,11 @@ void doJob() {
 		for (int i = 0; i < jointList.size(); ++i) {
 			int idx = jointList[i];
 			if (data.type[idx] == 1) {
-				cout << jointList[i] << ": " << data.p[idx][0] << " " << data.p[idx][1] << " " << data.p[idx][2] << '\n';
+				cout << jointList[i] << ": " << data.p[idx][0] << " " << data.p[idx][1] << " " << data.p[idx][2]
+					<< data.p[idx][3] << data.p[idx][4] << data.p[idx][5] << data.p[idx][6] << '\n';
 			}
 		}
+
 		if (flag_d != 0) {
 			std::cout << "discrete " << endl;
 			for (int i = 0; i < data.flag_d; ++i) {

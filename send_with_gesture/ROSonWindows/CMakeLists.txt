@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(skeleton_sender) #package name will be saved in ${PROJECT_NAME}
+project(skeleton_sender_wges) #package name will be saved in ${PROJECT_NAME}
 
 set(TARGET_ARCH "Win32")
 
 set(skeleton_sender_INCLUDE_DIRS 
-  C:/opt/ros/melodic/x64/my_catkin_ws/src/skeleton_sender/include
+  C:/opt/ros/melodic/x64/my_catkin_ws/src/skeleton_sender_wges/include
 )
 
 ## Find catkin and any catkin packages for building
@@ -34,9 +34,9 @@ catkin_package(
 )
 
 ## create .exe with .cpp file
-add_executable(skeleton_sender src/skeleton_sender.cpp)
+add_executable(skeleton_sender_wges src/skeleton_sender_wges.cpp)
 
-target_link_libraries(skeleton_sender 
+target_link_libraries(skeleton_sender_wges
   ${catkin_LIBRARIES}
 ) 
 
