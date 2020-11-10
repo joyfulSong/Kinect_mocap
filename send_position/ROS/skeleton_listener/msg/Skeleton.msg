@@ -1,3 +1,3 @@
 int32[] type
 geometry_msgs/Vector3[] position
-geometry_msgs/Vector3[] orientation #list
+geometry_msgs/Quaternion[] orientation #list
