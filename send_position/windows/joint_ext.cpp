@@ -16,7 +16,7 @@ void putText(cv::Mat& img, string s, cv::Point p) {
 
 void doJob() {
 	NtKinect kinect;
-	vector<int> jointList{ 0,2,3,4,5,7,8,9,11}; // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
+	vector<int> jointList{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23}; // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
 	//kinect.setGestureFile(L"SampleDatabase.gbd");
 	Data data;
 
@@ -79,6 +79,7 @@ void doJob() {
 							data.p[jointList[idx]][3] = person[joint].second.Orientation.x;
 							data.p[jointList[idx]][4] = person[joint].second.Orientation.y;
 							data.p[jointList[idx]][5] = person[joint].second.Orientation.z;
+							data.p[jointList[idx]][6] = person[joint].second.Orientation.w;
 
 							cnt++;
 						}
@@ -96,7 +97,7 @@ void doJob() {
 			int idx = jointList[i];
 			if (data.type[idx] == 1) {
 				cout << jointList[i] << ": " << data.p[idx][0] << " " << data.p[idx][1] << " " << data.p[idx][2] 
-					<< data.p[idx][3] << data.p[idx][4] << data.p[idx][5] << '\n';
+					<< data.p[idx][3] << data.p[idx][4] << data.p[idx][5] << data.p[idx][6] << '\n';
 			}
 		}
 

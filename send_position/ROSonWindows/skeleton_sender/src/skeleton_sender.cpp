@@ -70,9 +70,9 @@ int main(int argc, char** argv)
                     std::cout << i << " ";
 
                     geometry_msgs::Vector3 p; //double x, y, z
-                    geometry_msgs::Vector3 o;
+                    geometry_msgs::Quaternion o; //1110
                     p.x = data.p[i][0]; p.y = data.p[i][1]; p.z = data.p[i][2];
-                    o.x = data.p[i][3]; o.y = data.p[i][4]; o.z = data.p[i][5];
+                    o.x = data.p[i][3]; o.y = data.p[i][4]; o.z = data.p[i][5]; o.w = data.p[i][6];
                    /* std::cout << p.x << p.y << p.z << endl
                         << o.x << o.y << o.z << endl;*/
                     s.position.push_back(p);
@@ -85,11 +85,11 @@ int main(int argc, char** argv)
             for (int i = 0; i < s.position.size(); ++i) 
              {
                 geometry_msgs::Vector3 p;
-                geometry_msgs::Vector3 o;
+                geometry_msgs::Quaternion o;
                 p = s.position[i];
                 o = s.orientation[i];
                 ROS_INFO("%d position : x: %lf, y: %lf, z: %lf", s.type[i], p.x, p.y, p.z);
-                ROS_INFO("%d orientation : x: %lf, y: %lf, z: %lf", s.type[i], o.x, o.y, o.z);
+                ROS_INFO("%d orientation : x: %lf, y: %lf, z: %lf, w: %lf", s.type[i], o.x, o.y, o.z, o.w);
              }
 
             

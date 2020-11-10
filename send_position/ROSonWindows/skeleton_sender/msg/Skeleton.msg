@@ -1,3 +1,7 @@
-int32[] type
-geometry_msgs/Vector3[] position
-geometry_msgs/Vector3[] orientation #list //1109
+int32[] type #tuple
+geometry_msgs/Vector3[] position #list
+geometry_msgs/Quaternion[] orientation #list //1110
+#float64[] discrete_confi #tuple
+#string[] discrete_type #list
+#float64[] continuous_confi #tuple
+#string[] continuous_type #list
