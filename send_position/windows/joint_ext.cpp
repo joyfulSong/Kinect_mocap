@@ -52,10 +52,6 @@ void doJob() {
 			kinect.setRGB();
 			kinect.setSkeleton();
 
-			cv::imshow("rgb", kinect.rgbImage);
-			auto key = cv::waitKey(1);
-			if (key == 'q') break;
-
 			int cnt = 0;
 			for (auto person : kinect.skeleton) {
 				
@@ -89,6 +85,9 @@ void doJob() {
 				if (cnt == jointList.size()) flag_j = 1; // if detect all the needed joints
 				
 			}
+			cv::imshow("rgb", kinect.rgbImage);
+			auto key = cv::waitKey(1);
+			if (key == 'q') break;
 			
 		}
 		//check

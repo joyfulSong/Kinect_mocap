@@ -98,7 +98,7 @@ int main(int argc, char** argv)
             chatter_pub.publish(s);
 
             ros::spinOnce();
-            //ros::Duration(0.5).sleep();
+            //ros::Duration(3).sleep();
             fclose(fp);
 
             WaitResult = WAIT_FAILED;
