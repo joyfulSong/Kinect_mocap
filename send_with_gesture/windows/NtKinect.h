@@ -56,7 +56,7 @@
 #include <opencv2/opencv.hpp>
 #include <atlbase.h>
 
-#include <C:\Users\hayso\source\repos\kinectHY\Kinect.h>
+#include <Kinect.h>
 
 #if defined(USE_FACE)
 #include <Kinect.Face.h>
@@ -726,10 +726,9 @@ class NtKinect {
   // Joint.TrackingState  == TrackingState::TrackingState_{Tracked,Inferred}
   vector<int> skeletonId;
   vector<UINT64> skeletonTrackingId;
-  vector<vector<Joint> > skeleton;
-  vector<int> jointList_custum{ 0, 4, 8, 7, 11 }; //HY(0504)
+  vector<vector<pair <Joint, JointOrientation>> > skeleton; //hy 119
   void setSkeleton() { setSkeleton(skeleton); }
-  void setSkeleton(vector<vector<Joint> >& skeleton) {
+  void setSkeleton(vector<vector<pair <Joint, JointOrientation>> >& skeleton) { //hy 119
     updateBodyFrame();
     skeleton.clear();
     skeletonId.clear();
@@ -740,16 +739,18 @@ class NtKinect {
       BOOLEAN isTracked = false;
       ERROR_CHECK(body->get_IsTracked(&isTracked));
       if (!isTracked) continue;
-      vector<Joint> skel;
+      vector< pair <Joint, JointOrientation>> skel; //hy 119
       Joint joints[JointType::JointType_Count];
       body->GetJoints(JointType::JointType_Count, joints);
-      for (auto joint : joints) // hy: for all joints, check each joit is a member of custom jointlist.
-      {
-          for (int j = 0; j < jointList_custum.size(); j++) {
-              if (joint.JointType == jointList_custum[j])
-                  skel.push_back(joint);
-          }
+      //for (auto joint : joints) skel.push_back(joint); //hy 119
+      //hy 119
+      JointOrientation jointOrientations[JointType::JointType_Count];
+      body->GetJointOrientations(JointType::JointType_Count, jointOrientations);
+      for (int i = 0; i < JointType::JointType_Count; ++i) {
+          skel.push_back(make_pair(joints[i], jointOrientations[i]));
       }
+      //hy 119
+
       skeleton.push_back(skel);
       skeletonId.push_back(i);
       UINT64 trackingId;
@@ -776,7 +777,6 @@ class NtKinect {
     
     }
   }
-  
   
   // HandState::HandState_{Unknown,NotTracked,Open,Closed,Lasso}
   // TrackingConfidence::TrackingConfidence_{Low,Hight}

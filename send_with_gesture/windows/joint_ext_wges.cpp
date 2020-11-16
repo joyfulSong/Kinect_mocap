@@ -17,7 +17,7 @@ void putText(cv::Mat& img, string s, cv::Point p) {
 void doJob() {
 	NtKinect kinect;
 	vector<int> jointList{ 2,3,4,5,7,8,9,11 };
-	kinect.setGestureFile(L"SampleDatabase.gbd");
+	kinect.setGestureFile(L"SitAndStand.gbd");
 	Data data;
 
 	HANDLE hEvent;
@@ -51,10 +51,6 @@ void doJob() {
 			memset(&data, 0, sizeof(data)); //reset the structure instance to prevent the memory overlap. 
 			kinect.setRGB();
 			kinect.setSkeleton();
-
-			cv::imshow("rgb", kinect.rgbImage);
-			auto key = cv::waitKey(1);
-			if (key == 'q') break;
 
 			int cnt = 0;
 			for (auto person : kinect.skeleton) {
@@ -113,11 +109,14 @@ void doJob() {
 				}
 
 			}
+			cv::imshow("rgb", kinect.rgbImage);
+			auto key = cv::waitKey(1);
+			if (key == 'q') break;
 		
 			//std::cout << flag_j << ", " << flag_d << ", " << flag_c << std::endl;
 		}
 		//check
-		cout << "position value: x y z" << endl;
+		cout << "pose value: x y z" << endl;
 		for (int i = 0; i < jointList.size(); ++i) {
 			int idx = jointList[i];
 			if (data.type[idx] == 1) {
