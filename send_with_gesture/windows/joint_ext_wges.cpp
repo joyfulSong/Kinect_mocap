@@ -16,8 +16,9 @@ void putText(cv::Mat& img, string s, cv::Point p) {
 
 void doJob() {
 	NtKinect kinect;
-	vector<int> jointList{ 2,3,4,5,7,8,9,11 };
-	kinect.setGestureFile(L"SitAndStand.gbd");
+	vector<int> jointList{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23 };
+	//kinect.setGestureFile(L"SampleDatabase.gbd");
+	kinect.setGestureFile(L"VEROSIM1.gbd");
 	Data data;
 
 	HANDLE hEvent;
@@ -44,7 +45,7 @@ void doJob() {
 
 		WaitResult = WaitForSingleObject(hMutex, INFINITE); //DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds), maximum waiting time in millisecond. (신호상태가 될때까지 기다리나, 최대 시간도 부여함.)
 
-		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 && flag_d == 1 && flag_c == 1)) {
+		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 && (flag_d == 1 || flag_c == 1))) {
 			// WAIT_OBJECT_0: signaled to be used in other thread.
 			// 셋다 1이 되어야지 false --> continuous, gesture는 flag가 되려면 임계값 넘어야 함.
 			flag_j = 0, flag_d = 0, flag_c = 0;
@@ -113,7 +114,7 @@ void doJob() {
 			auto key = cv::waitKey(1);
 			if (key == 'q') break;
 		
-			//std::cout << flag_j << ", " << flag_d << ", " << flag_c << std::endl;
+			std::cout << flag_j << ", " << flag_d << ", " << flag_c << std::endl;
 		}
 		//check
 		cout << "pose value: x y z" << endl;
