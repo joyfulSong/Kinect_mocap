@@ -756,24 +756,6 @@ class NtKinect {
       UINT64 trackingId;
       ERROR_CHECK(body->get_TrackingId(&trackingId));
       skeletonTrackingId.push_back(trackingId);
-
-      //std::cout << "skeleton.size() :  " << skeleton.size() << std::endl;
-      //std::cout << "skeleton[0].size() " << skeleton[0].size() << std::endl;
-      //
-      //for (int j = 0; j < skeleton[0].size(); ++j) {
-      //    std::cout << /*j << "th joint type position"*/ /*<<*/ skeleton[0][3].Position.X << " " << skeleton[0][3].Position.Y << " " << skeleton[0][3].Position.Z << " " << "\n";
-      //}
-      
-    /*  for (int i = 0; skeleton.size(); ++i) {
-          std::ofstream skeletonFile;
-          for (int j = 0; skeleton[i].size(); ++j) {
-              std::cout << j << "th joint type position" << skeleton[i][j].Position.X  << " " << skeleton[i][j].Position.Y << " " << skeleton[i][j].Position.Z << " " << "\n"
-                  << "orientaion, (w,x,y,x) " << skeleton[i][j].Orientation.w << " " << skeleton[i][j].Orientation.x << " " << skeleton[i][j].Orientation.y << " " << skeleton[i][j].Orientation.z << "\n";
-              skeletonFile << skeleton[i][j].Position.X << skeleton[i][j].Position.Y << skeleton[i][j].Position.Z <<
-              skeleton[i][j].orientation.w << skeleton[i][j].orientation.x << skeleton[i][j].orientation.y << "\n";
-          }
-          skeletonFile.close();*/
-      //}
     
     }
   }

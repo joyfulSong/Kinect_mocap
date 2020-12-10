@@ -17,7 +17,6 @@ void putText(cv::Mat& img, string s, cv::Point p) {
 void doJob() {
 	NtKinect kinect;
 	vector<int> jointList{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23}; // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
-	//kinect.setGestureFile(L"SampleDatabase.gbd");
 	Data data;
 
 	HANDLE hEvent;
@@ -40,14 +39,14 @@ void doJob() {
 			TEXT("hayMutex")
 		);
 
-		bool flag_j = 0; // flag_d = 0, flag_c = 0;
+		bool flag_j = 0; 
 
 		WaitResult = WaitForSingleObject(hMutex, INFINITE); //DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds), maximum waiting time until it gets signal in millisecond. 
 		
-		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 )) { // && flag_d == 1 && flag_c == 1
+		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 )) { 
 			// WAIT_OBJECT_0: signaled to be used in other thread.
 			
-			flag_j = 0; // flag_d = 0, flag_c = 0;
+			flag_j = 0; 
 			memset(&data, 0, sizeof(data)); //reset the structure instance to prevent the memory overlap. 
 			kinect.setRGB();
 			kinect.setSkeleton();
@@ -55,7 +54,6 @@ void doJob() {
 			int cnt = 0;
 			for (auto person : kinect.skeleton) {
 				
-				//for (auto joint : person) { //hy 119
 				for(int joint = 0; joint < person.size(); ++joint){
 					// consider all joints of ONE person. 
 					if (person[joint].first.TrackingState == TrackingState_NotTracked) continue;
@@ -102,40 +100,13 @@ void doJob() {
 
 		FILE* fp = fopen("kinect_output.txt", "wb"); //open file as w/binary mode
 
-		// 데이터 출력부 작성
 		fwrite(&data, sizeof(data), 1, fp); // address of structure, write once.
 		if (fp != NULL) {
 			fclose(fp); //end of using the file. If it is failed to fopen, the returned value is NULL.
 		}
 		
-		////check
-		//Data d;
-		//FILE* fp1 = fopen("kinect_output.txt", "rb");
-		//fread(&d, sizeof(d), 1, fp1);
-		////check
-		//cout << "position value: x y z" << endl;
-		//for (int i = 0; i < 25; ++i) {
-		//	if (d.type[i] == 1) {
-		//		cout << i << ": " << d.p[i][0] << " " << d.p[i][1] << " " << d.p[i][2] << '\n';
-		//	}
-		//}
-		//if (flag_d != 0) {
-		//	std::cout << "discrete " << endl;
-		//	for (int i = 0; i < d.discrete_type.size(); ++i) {
-		//		cout << "discrete gesture type is " << d.discrete_type[i]
-		//			<< "and confidence is " << d.discrete_confi[i] << endl;
-		//	}
-		//}
-
-		//if (flag_c != 0) {
-		//	std::cout << "continuous " << endl;
-		//	for (int i = 0; i < d.continuous_type.size(); ++i) {
-		//		cout << "continuous gesture type is " << d.continuous_type[i]
-		//			<< "and confidence is " << d.continuous_confi[i] << endl;
-		//	}
-		//}
 		SetEvent(hEvent); // signal the event
-		ReleaseMutex(hMutex); // 여기서 release하자마자 저쪽에서 인식함.
+		ReleaseMutex(hMutex); 
 		WaitResult = WAIT_FAILED;
 	}
 
