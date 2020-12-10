@@ -43,15 +43,5 @@ typedef struct Data {
     //skeleton
     bool type[25];
     double p[25][7]; 
-
-    //gesture
-    int flag_d = 0;
-    double discrete_confi[10];
-    char discrete_type[10][20] = { 0, };
-
-    int flag_c = 0;
-    double continuous_confi[10];
-    char continuous_type[10][20] = { 0, };
-    //
 };
 #pragma pack(pop)

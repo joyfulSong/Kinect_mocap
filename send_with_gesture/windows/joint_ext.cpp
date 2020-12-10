@@ -8,7 +8,7 @@
 
 #define USE_GESTURE
 #include "NtKinect.h"
-#include "Skel_data_wges.h"
+#include "Skel_data.h"
 
 void putText(cv::Mat& img, string s, cv::Point p) {
 	cv::putText(img, s, p, cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 0, 255), 2.0, CV_AA);
@@ -16,9 +16,7 @@ void putText(cv::Mat& img, string s, cv::Point p) {
 
 void doJob() {
 	NtKinect kinect;
-	vector<int> jointList{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23 };
-	kinect.setGestureFile(L"VEROSIM_2P.gbd");
-	//kinect.setGestureFile(L"VEROSIM_1P.gbd");
+	vector<int> jointList{ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23}; // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
 	Data data;
 
 	HANDLE hEvent;
@@ -41,13 +39,14 @@ void doJob() {
 			TEXT("hayMutex")
 		);
 
-		bool flag_j = 0, flag_d = 0, flag_c = 0;
+		bool flag_j = 0; 
 
-		WaitResult = WaitForSingleObject(hMutex, INFINITE); //DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds), maximum waiting time in millisecond. 
-
-		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 && (flag_d == 1 || flag_c == 1))) {
+		WaitResult = WaitForSingleObject(hMutex, INFINITE); //DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds), maximum waiting time until it gets signal in millisecond. 
+		
+		while (WaitResult == WAIT_OBJECT_0 && !(flag_j == 1 )) { 
 			// WAIT_OBJECT_0: signaled to be used in other thread.
-			flag_j = 0, flag_d = 0, flag_c = 0;
+			
+			flag_j = 0; 
 			memset(&data, 0, sizeof(data)); //reset the structure instance to prevent the memory overlap. 
 			kinect.setRGB();
 			kinect.setSkeleton();
@@ -55,7 +54,7 @@ void doJob() {
 			int cnt = 0;
 			for (auto person : kinect.skeleton) {
 				
-				for (int joint = 0; joint < person.size(); ++joint) {
+				for(int joint = 0; joint < person.size(); ++joint){
 					// consider all joints of ONE person. 
 					if (person[joint].first.TrackingState == TrackingState_NotTracked) continue;
 					ColorSpacePoint cp;
@@ -83,60 +82,19 @@ void doJob() {
 				}
 				if (cnt == jointList.size()) flag_j = 1; // if detect all the needed joints
 				
-				kinect.setGesture();
-				
-				for (int i = 0; i < kinect.discreteGesture.size(); i++) {
-					flag_d = 1;
-					data.flag_d = kinect.discreteGesture.size();
-
-					auto g = kinect.discreteGesture[i];
-					putText(kinect.rgbImage, kinect.gesture2string(g.first) + " " + to_string(g.second), cv::Point(50, 30 + 30 * i));
-					
-					data.discrete_confi[i] = g.second; 
-					strcpy(data.discrete_type[i], kinect.gesture2string(g.first).c_str());
-				}
-
-				for (int i = 0; i < kinect.continuousGesture.size(); i++) {
-					flag_c = 1;
-					data.flag_c = kinect.continuousGesture.size();
-					
-					auto g = kinect.continuousGesture[i];
-					putText(kinect.rgbImage, kinect.gesture2string(g.first) + " " + to_string(g.second), cv::Point(500, 30 + 30 * i));
-					
-					data.continuous_confi[i] = g.second; 
-					strcpy(data.continuous_type[i], kinect.gesture2string(g.first).c_str());
-				}
-
 			}
 			cv::imshow("rgb", kinect.rgbImage);
 			auto key = cv::waitKey(1);
 			if (key == 'q') break;
-		
-			std::cout << flag_j << ", " << flag_d << ", " << flag_c << std::endl;
+			
 		}
 		//check
-		cout << "pose value: x y z" << endl;
+		cout << "position value: x y z" << endl;
 		for (int i = 0; i < jointList.size(); ++i) {
 			int idx = jointList[i];
 			if (data.type[idx] == 1) {
-				cout << jointList[i] << ": " << data.p[idx][0] << " " << data.p[idx][1] << " " << data.p[idx][2]
+				cout << jointList[i] << ": " << data.p[idx][0] << " " << data.p[idx][1] << " " << data.p[idx][2] 
 					<< data.p[idx][3] << data.p[idx][4] << data.p[idx][5] << data.p[idx][6] << '\n';
-			}
-		}
-
-		if (flag_d != 0) {
-			std::cout << "discrete " << endl;
-			for (int i = 0; i < data.flag_d; ++i) {
-				cout << "discrete gesture type is " << data.discrete_type[i]
-					<< "and confidence is " << data.discrete_confi[i] << endl;
-			}
-		}
-
-		if (flag_c != 0) {
-			std::cout << "continuous " << endl;
-			for (int i = 0; i < data.flag_c; ++i) {
-				cout << "continuous gesture type is " << data.continuous_type[i]
-					<< "and confidence is " << data.continuous_confi[i] << endl;
 			}
 		}
 
